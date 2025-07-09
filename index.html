@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+is this correct <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,6 +16,7 @@
             background: #1a1a1a;
             height: 100vh;
             overflow: hidden;
+            cursor: none;
         }
 
         .frame {
@@ -25,7 +26,7 @@
             right: 20px;
             bottom: 20px;
             border: 2px solid #333;
-            background: #f8f8f8;
+            background:#f2f2f2;
         }
 
         .container {
@@ -36,7 +37,7 @@
 
         .sidebar {
             width: 320px;
-            background: #f8f8f8;
+            background:  #f0f0f0;
             padding: 60px 40px;
             border-right: 1px solid #e0e0e0;
             position: relative;
@@ -77,12 +78,30 @@
             text-decoration: none;
             font-weight: 400;
             transition: all 0.3s ease;
-            padding: 2px 0;
+            padding: 8px 0;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.02), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-item:hover::before {
+            left: 100%;
         }
 
         .nav-item:hover {
             color: #000;
-            transform: translateX(2px);
+            transform: translateX(3px);
         }
 
         .nav-item.active {
@@ -90,16 +109,16 @@
             font-weight: 500;
         }
 
-        .nav-item.active::before {
+        .nav-item.active::after {
             content: "•";
-            margin-right: 12px;
+            margin-left: 12px;
             color: #000;
             font-size: 16px;
         }
 
         .main-area {
             flex: 1;
-            background: #e8e8e8;
+            background:  #e0e0e0;
             position: relative;
             overflow: hidden;
         }
@@ -163,6 +182,13 @@
             color: #2a2a2a;
             font-weight: 400;
             letter-spacing: 0.2px;
+            opacity: 1;
+            transition: all 0.6s ease;
+        }
+
+        .content-block.hidden {
+            opacity: 0;
+            transform: translateY(-50%) translateX(30px);
         }
 
         .content-block p {
@@ -179,47 +205,181 @@
             color: #999;
             letter-spacing: 3px;
             font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mode-indicator:hover {
+            color: #333;
+            transform: scale(1.1);
+        }
+
+        /* Magnetic Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: all 0.15s ease;
         }
 
         .cursor-dot {
             position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #333;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: #000;
             border-radius: 50%;
-            pointer-events: none;
-            transition: all 0.1s ease;
-            z-index: 1000;
+            transform: translate(-50%, -50%);
+            transition: all 0.2s ease;
+        }
+
+        .cursor-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #333;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.3;
+            transition: all 0.2s ease;
+        }
+
+        .cursor.hover {
+            transform: scale(1.5);
+        }
+
+        .cursor.hover .cursor-dot {
+            background: #000;
+            transform: translate(-50%, -50%) scale(1.5);
+        }
+
+        .cursor.hover .cursor-circle {
+            opacity: 0.8;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        /* Project Grid */
+        .project-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
             opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+            pointer-events: none;
         }
 
-        .sidebar:hover .cursor-dot {
+        .project-grid.active {
             opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
         }
 
-        /* Hover effects for interactive elements */
-        .nav-item:hover {
-            text-shadow: 0 0 1px rgba(0,0,0,0.1);
+        .project-card {
+            background:#f4f4f4;
+            border-radius: 8px;
+            padding: 30px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            transform: translateY(0);
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* Subtle gradient overlay */
-        .main-area::before {
+        .project-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(
-                135deg,
-                rgba(255,255,255,0.1) 0%,
-                transparent 50%,
-                rgba(0,0,0,0.02) 100%
-            );
-            pointer-events: none;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(0,0,0,0.02));
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .project-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .project-description {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tech-tag {
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .project-card:nth-child(1) { animation-delay: 0.1s; }
+        .project-card:nth-child(2) { animation-delay: 0.2s; }
+        .project-card:nth-child(3) { animation-delay: 0.3s; }
+        .project-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .project-grid.active .project-card {
+            animation: slideInUp 0.6s ease forwards;
         }
 
         @media (max-width: 768px) {
+            body {
+                cursor: auto;
+            }
+            
+            .cursor {
+                display: none;
+            }
+            
             .frame {
                 top: 10px;
                 left: 10px;
@@ -238,105 +398,335 @@
                 border-bottom: 1px solid #e0e0e0;
             }
             
-            .header {
-                margin-bottom: 30px;
+            .project-grid {
+                padding: 30px 25px;
+                grid-template-columns: 1fr;
             }
             
-            .name {
-                font-size: 36px;
-            }
-            
-            .content-block {
-                position: static;
-                transform: none;
-                width: auto;
-                margin: 30px 25px;
-            }
-            
-            .mode-indicator {
-                display: none;
+            .project-card {
+                padding: 20px;
             }
         }
+            .profile-pic {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #000; /* optional */
+}
+
+            .profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
     </style>
 </head>
 <body>
+    <div class="cursor">
+        <div class="cursor-dot"></div>
+        <div class="cursor-circle"></div>
+    </div>
+
     <div class="frame">
         <div class="container">
+            <div class="sidebar">
+                <div class="header">
+                    <div class="profile-pic">
+                        <img src="the mask.jpeg" alt="Kel Tuva" />
+                    </div>
+
+                    <h1 class="name">Kel Tuva</h1>
+                    <p class="subtitle">Designer & Developer</p>
+                </div>
+                
+                <nav class="navigation">
+                    <a href="#" class="nav-item active" data-section="info">Info</a>
+                    <a href="#" class="nav-item" data-section="projects">Projects</a>
+                    <a href="#" class="nav-item" data-section="skills">Skills</a>
+                    <a href="#" class="nav-item" data-section="blog">Experience</a>
+                    <a href="#" class="nav-item" data-section="work">Certifications</a>
+                    <a href="#" class="nav-item" data-section="contact">Contact</a>
+                </nav>
+            </div>
             
-            
-            <div class="main-container">
-        <div id="profile-header">
-            <img src="https://via.placeholder.com/80" alt="Profile Picture" class="profile-pic">
-            <h1 class="profile-name">Kel Tuva</h1>
-            <p class="profile-specialties">AI Engineer, Fullstack Developer, Data Analytics</p>
-        </div>
+            <div class="main-area">
                 <div class="grain-texture"></div>
                 <div class="fine-grain"></div>
                 
-                <div class="content-block">
+                <div class="content-block" id="bio-content">
                     <p>
-                        Born in 2002<br>
-                        in Kilifi, Kenya.<br>
+                        Born in 2004<br>
+                        in kilifi, Kenya.<br>
                         I believe<br>
-                        AI and Machine learning<br>
+                        web and app design<br>
                         can be more<br>
-                        diverse, inspiring and tackle some of humanities close to home issues<br>
+                        diverse and inspiring.<br>
                         With a mission<br>
                         to present<br>
                         the possibilities<br>
-                        of web design,<br>
+                        of web App design,AI<br>
                         I am pursuing<br>
                         new expressions<br>
                         through experiments<br>
-                        and thoughts.<br>
+                        and thoughts.
                     </p>
                 </div>
-                
-                </div>
+
+                <div class="project-grid" id="skills-grid" style="display: none;">
+                    <div class="project-grid" id="skills-grid">
+    <div class="project-card">
+        <h3 class="project-title">Programming Languages</h3>
+        <div class="project-tech">
+            <span class="tech-tag">JavaScript</span>
+            <span class="tech-tag">TypeScript</span>
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">C#</span>
+            <span class="tech-tag">C++</span>
         </div>
     </div>
-    <div id="theme-toggle-button" class="mode-indicator">
+
+    <div class="project-card">
+        <h3 class="project-title">Frontend</h3>
+        <div class="project-tech">
+            <span class="tech-tag">React.js</span>
+            <span class="tech-tag">Next.js</span>
+            <span class="tech-tag">Redux</span>
+            <span class="tech-tag">Zustand</span>
+            <span class="tech-tag">Material UI</span>
+            <span class="tech-tag">Tailwind CSS</span>
+        </div>
+    </div>
+
+    <div class="project-card">
+        <h3 class="project-title">Backend</h3>
+        <div class="project-tech">
+            <span class="tech-tag">Node.js</span>
+            <span class="tech-tag">Express</span>
+            <span class="tech-tag">Flask</span>
+            <span class="tech-tag">FastAPI</span>
+            <span class="tech-tag">.NET</span>
+            <span class="tech-tag">SQL</span>
+            <span class="tech-tag">KQL</span>
+        </div>
+    </div>
+
+    <div class="project-card">
+        <h3 class="project-title">Cloud & DevOps</h3>
+        <div class="project-tech">
+            <span class="tech-tag">Azure</span>
+            <span class="tech-tag">AWS</span>
+            <span class="tech-tag">Docker</span>
+            <span class="tech-tag">Kubernetes</span>
+            <span class="tech-tag">Grafana</span>
+            <span class="tech-tag">Prometheus</span>
+            <span class="tech-tag">CI/CD Pipelines</span>
+        </div>
+    </div>
+
+    <div class="project-card">
+        <h3 class="project-title">Machine Learning & Tools</h3>
+        <div class="project-tech">
+            <span class="tech-tag">TensorFlow</span>
+            <span class="tech-tag">Git</span>
+            <span class="tech-tag">GitHub</span>
+            <span class="tech-tag">Vitest</span>
+            <span class="tech-tag">PyTest</span>
+            <span class="tech-tag">Bash</span>
+        </div>
+    </div>
+</div>
+
+                    <div class="project-card">
+                        <h3 class="project-title">Neural Design System</h3>
+                        <p class="project-description">AI-powered component library that adapts to user behavior and generates contextual design patterns.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">TypeScript</span>
+                            <span class="tech-tag">TensorFlow.js</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <h3 class="project-title">Quantum Portfolio</h3>
+                        <p class="project-description">Interactive 3D portfolio showcasing quantum computing concepts through WebGL visualizations.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Three.js</span>
+                            <span class="tech-tag">WebGL</span>
+                            <span class="tech-tag">GSAP</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <h3 class="project-title">Morphic UI</h3>
+                        <p class="project-description">Shape-shifting interface components that transform based on content and user interaction patterns.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Vue.js</span>
+                            <span class="tech-tag">CSS Houdini</span>
+                            <span class="tech-tag">Framer Motion</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <h3 class="project-title">Sonic Branding</h3>
+                        <p class="project-description">Audio-reactive brand identity system that generates visual patterns from brand sound signatures.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Web Audio API</span>
+                            <span class="tech-tag">Canvas</span>
+                            <span class="tech-tag">Machine Learning</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mode-indicator" id="mode-toggle">
                     LIGHT | DARK
                 </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Cursor follow effect
-        const cursor = document.querySelector('.cursor-dot');
-        const sidebar = document.querySelector('.sidebar');
+        // Magnetic cursor system
+        const cursor = document.querySelector('.cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorCircle = document.querySelector('.cursor-circle');
         
-        sidebar.addEventListener('mousemove', (e) => {
-            const rect = sidebar.getBoundingClientRect();
-            cursor.style.left = (e.clientX - rect.left - 4) + 'px';
-            cursor.style.top = (e.clientY - rect.top - 4) + 'px';
+        let mouseX = 0;
+        let mouseY = 0;
+        let cursorX = 0;
+        let cursorY = 0;
+        
+        // Smooth cursor following
+        function updateCursor() {
+            const diffX = mouseX - cursorX;
+            const diffY = mouseY - cursorY;
+            
+            cursorX += diffX * 0.1;
+            cursorY += diffY * 0.1;
+            
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            
+            requestAnimationFrame(updateCursor);
+        }
+        
+        // Track mouse movement
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
         });
         
-        // Smooth navigation interactions
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                item.classList.add('active');
+        // Magnetic effect for interactive elements
+        const magneticElements = document.querySelectorAll('.nav-item, .project-card, .mode-indicator');
+        
+        magneticElements.forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
+            });
+            
+            element.addEventListener('mousemove', (e) => {
+                const rect = element.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const deltaX = (x - centerX) * 0.15;
+                const deltaY = (y - centerY) * 0.15;
+                
+                element.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                element.style.transform = 'translate(0, 0)';
             });
         });
         
-        // Subtle parallax effect on texture
-        let ticking = false;
+        // Navigation system
+        const navItems = document.querySelectorAll('.nav-item');
+        const bioContent = document.getElementById('bio-content');
+        const projectGrid = document.getElementById('project-grid');
+        const skillsGrid = document.getElementById('skills-grid');
+
         
-        function updateGrain() {
-            const grain = document.querySelector('.grain-texture');
-            const scrollY = window.pageYOffset;
-            grain.style.transform = `translate(${scrollY * 0.1}px, ${scrollY * 0.1}px)`;
-            ticking = false;
-        }
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Update active state
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                
+                const section = item.getAttribute('data-section');
+                
+                if (section === 'projects') {
+    bioContent.classList.add('hidden');
+    skillsGrid.classList.remove('active');
+    skillsGrid.style.display = 'none';
+    setTimeout(() => {
+        projectGrid.classList.add('active');
+        projectGrid.style.display = 'grid';
+    }, 300);
+} else if (section === 'skills') {
+    bioContent.classList.add('hidden');
+    projectGrid.classList.remove('active');
+    projectGrid.style.display = 'none';
+    setTimeout(() => {
+        skillsGrid.classList.add('active');
+        skillsGrid.style.display = 'grid';
+    }, 300);
+} else {
+    projectGrid.classList.remove('active');
+    skillsGrid.classList.remove('active');
+    projectGrid.style.display = 'none';
+    skillsGrid.style.display = 'none';
+    setTimeout(() => {
+        bioContent.classList.remove('hidden');
+    }, 300);
+}
+
+
+            });
+        });
         
-        function requestTick() {
-            if (!ticking) {
-                requestAnimationFrame(updateGrain);
-                ticking = true;
-            }
-        }
+        // Project card interactions
+        const projectCards = document.querySelectorAll('.project-card');
         
-        window.addEventListener('scroll', requestTick);
+        projectCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-8px) rotateX(5deg) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) rotateX(0) scale(1)';
+            });
+        });
+        
+        // Mode toggle (placeholder for future dark mode)
+        const modeToggle = document.getElementById('mode-toggle');
+        modeToggle.addEventListener('click', () => {
+            // Future dark mode implementation
+            console.log('Mode toggle clicked - dark mode coming soon!');
+        });
+        
+        // Initialize cursor animation
+        updateCursor();
+        
+        // Breathing effect for project cards
+        projectCards.forEach((card, index) => {
+            setInterval(() => {
+                if (!card.matches(':hover')) {
+                    card.style.transform = `translateY(${Math.sin(Date.now() * 0.001 + index) * 2}px)`;
+                }
+            }, 50);
+        });
     </script>
 </body>
 </html>
